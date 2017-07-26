@@ -1,0 +1,3 @@
+#!/bin/bash
+
+chown odoo: -R /opt/odoo/custom/src/odoo-extra/runbot/static/

@@ -1,0 +1,13 @@
+version: "2.1"
+
+services:
+  odoo:
+    image: laslabs/runbot:9.0
+    build:
+      context: ./odoo
+      args:
+        ODOO_VERSION: 9.0
+    environment:
+      ODOO_MAJOR: 9
+      ODOO_MINOR: 9.0
+      DEPTH_DEFAULT: 1
