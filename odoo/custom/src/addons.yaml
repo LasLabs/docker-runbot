@@ -1,0 +1,27 @@
+partner-contact:
+  - "*"
+
+product-attribute:
+  - "*"
+
+server-tools:
+  - "*"
+
+web:
+  - web_responsive
+  - "*"
+
+website:
+  - "*"
+
+social:
+  - "*"
+
+odoo-extra:
+  - runbot
+  - "*"
+
+runbot-addons:
+  - runbot_traefik
+  - runbot_travis2docker
+  - "*"

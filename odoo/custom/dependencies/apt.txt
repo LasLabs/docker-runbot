@@ -1,0 +1,3 @@
+font-manager
+libssl-dev
+python-matplotlib

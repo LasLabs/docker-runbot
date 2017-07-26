@@ -1,0 +1,31 @@
+sudo: required
+
+language: python
+
+services:
+  - docker
+
+env:
+  global:
+    - BUILD_ARGS="ODOO_VERSION=9.0"
+    - PORTS="8069:8069"
+    - LINKS="db:db"
+    - DOCKER_CONTEXT="./odoo"
+
+  matrix:
+    - TESTS="1"
+    - LINT_CHECK="1"
+
+before_install:
+  - docker run -d -e POSTGRES_USER="odoo" -e POSTGRES_PASSWORD="odoo" --name="db" postgres:9.6-alpine
+
+install:
+  - git clone --depth=1 https://github.com/LasLabs/docker-quality-tools.git ${HOME}/docker-quality-tools
+  - export PATH=${HOME}/docker-quality-tools/travis:${PATH}
+  - travis_install_all
+
+script:
+  - travis_run_all
+
+after_success:
+  - travis_after_success_all

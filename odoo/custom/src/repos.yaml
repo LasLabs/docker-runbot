@@ -1,0 +1,79 @@
+# Odoo is always required
+./odoo:
+  defaults:
+    # Shallow repositories (1=1) are faster & thinner
+    # You may need a bigger depth when merging PRs
+    depth: "$DEPTH_DEFAULT"
+  remotes:
+    ocb: https://github.com/OCA/OCB.git
+    odoo: https://github.com/odoo/odoo.git
+  target:
+    ocb 9.0
+  merges:
+    - ocb 9.0
+    # Example of a merge of the PR with the number <PR>
+    # - oca refs/pull/<PR>/head
+
+./odoo-extra:
+  defaults:
+    depth: "$DEPTH_DEFAULT"
+  remotes:
+    odoo: https://github.com/odoo/odoo-extra.git
+    vauxoo: https://github.com/vauxoo/odoo-extra.git
+  target:
+    odoo aggregated_branch_name
+  merges:
+    - vauxoo 9.0
+
+./runbot-addons:
+  defaults:
+    depth: "$DEPTH_DEFAULT"
+  remotes:
+    oca: https://github.com/OCA/runbot-addons.git
+    laslabs: https://github.com/LasLabs/runbot-addons.git
+  target:
+    laslabs aggregated_branch_name
+  merges:
+    - laslabs release/9.0/runbot_traefik
+
+./server-tools:
+  defaults:
+    depth: 100
+  remotes:
+    oca: https://github.com/OCA/server-tools.git
+    laslabs: https://github.com/LasLabs/server-tools.git
+  target:
+    laslabs aggregated_branch_name
+  merges:
+    - oca 9.0
+
+./web:
+  defaults:
+    depth: "$DEPTH_DEFAULT"
+  remotes:
+    oca: https://github.com/OCA/web.git
+    laslabs: https://github.com/LasLabs/web.git
+  merges:
+    - oca 9.0
+  target: laslabs aggregated_branch_name
+
+./website:
+  defaults:
+    depth: "$DEPTH_DEFAULT"
+  remotes:
+    oca: https://github.com/OCA/website.git
+    laslabs: https://github.com/LasLabs/website.git
+  merges:
+    - oca 9.0
+  target: oca 9.0
+
+./social:
+  defaults:
+    depth: "$DEPTH_DEFAULT"
+  remotes:
+    oca: https://github.com/OCA/social.git
+    laslabs: https://github.com/LasLabs/social.git
+  merges:
+    - oca 9.0
+  target:
+    laslabs aggregated_branch_name
