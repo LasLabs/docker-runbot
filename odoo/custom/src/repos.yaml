@@ -34,11 +34,11 @@
   target:
     laslabs aggregated_branch_name
   merges:
-    - laslabs release/9.0/runbot_traefik
+    - laslabs long-term/runbot
 
 ./server-tools:
   defaults:
-    depth: 100
+    depth: "$DEPTH_DEFAULT"
   remotes:
     oca: https://github.com/OCA/server-tools.git
     laslabs: https://github.com/LasLabs/server-tools.git
