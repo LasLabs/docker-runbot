@@ -11,6 +11,7 @@ env:
     - PORTS="8069:8069"
     - LINKS="db:db"
     - DOCKER_CONTEXT="./odoo"
+    - LINT_IGNORE="DL3006" # @TODO: Remove when upstream tagged
 
   matrix:
     - TESTS="1"
