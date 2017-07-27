@@ -83,8 +83,6 @@ services:
     volumes:
       - odoo-web-data:/var/lib/odoo
       - /var/run/docker.sock:/var/run/docker.sock
-      - /Users/dlasley/Documents/Repos/oca-runbot-addons/runbot_travis2docker:/opt/odoo/auto/addons/runbot_travis2docker
-      - /Users/dlasley/Documents/Repos/oca-runbot-addons/runbot_traefik:/opt/odoo/auto/addons/runbot_traefik
     tty: true
     privileged: true
     environment:
@@ -151,6 +149,7 @@ services:
     environment:
       PGPASSWORD: odoo
       PGUSER: odoo
+      WITHOUT_DEMO: all
   cron:
     privileged: true
     image: laslabs/runbot:latest
