@@ -1,0 +1,120 @@
+version: '2'
+volumes:
+  odoo-web-data:
+    driver: aufs
+  odoo-db-data:
+    driver: aufs
+  runbot-builds:
+    driver: aufs
+  runbot-ssh:
+    driver: aufs
+services:
+  install:
+    image: laslabs/runbot:9.0
+    command: 'install-addons'
+    links:
+    - postgresql:db
+    volumes:
+    - odoo-web-data:/var/lib/odoo
+    - /var/run/docker.sock:/var/run/docker.sock
+    - runbot-builds:/opt/odoo/custom/src/odoo-extra/runbot/static
+    - runbot-ssh:/home/odoo/.ssh
+    tty: true
+    environment:
+      PGPASSWORD: odoo
+      PGUSER: odoo
+      WITHOUT_DEMO: all
+  cron:
+    privileged: true
+    image: laslabs/runbot:9.0
+    environment:
+      PGPASSWORD: odoo
+      PGUSER: odoo
+      WAIT_NOHOST: install
+    volumes:
+    - odoo-web-data:/var/lib/odoo
+    - /var/run/docker.sock:/var/run/docker.sock
+    - runbot-builds:/opt/odoo/custom/src/odoo-extra/runbot/static
+    - runbot-ssh:/home/odoo/.ssh
+    tty: true
+    links:
+    - postgresql:db
+    command:
+    - /usr/local/bin/odoo
+    - --max-cron-threads=1
+    - --workers=1
+    - --limit-time-real=600
+    - --limit-time-cpu=300
+  postgresql:
+    image: postgres:9.6-alpine
+    hostname: db
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_PASSWORD: odoo
+      POSTGRES_USER: odoo
+    volumes:
+    - odoo-db-data:/var/lib/postgresql/data/pgdata
+  web:
+    image: laslabs/runbot:9.0
+    environment:
+      ADMIN_PASSWORD: admin
+      PGPASSWORD: odoo
+      PGUSER: odoo
+      PROXY_MODE: 'true'
+      WAIT_NOHOST: install
+    volumes:
+    - odoo-web-data:/var/lib/odoo
+    - /var/run/docker.sock:/var/run/docker.sock
+    - runbot-builds:/opt/odoo/custom/src/odoo-extra/runbot/static
+    tty: true
+    links:
+    - postgresql:db
+    ports:
+    - 8069
+    command:
+    - /usr/local/bin/odoo
+    - --max-cron-threads=0
+    - --workers=4
+    - --no-database-list
+    - --db-filter=prod
+    labels:
+      traefik.enable: 'true'
+      traefik.port: '8069'
+      traefik.frontend.rule: 'Host: runbot.example.com;'
+      traefik.frontend.passHostHeader: 'true'
+  traefik:
+    image: laslabs/runbot-traefik:9.0
+    stdin_open: true
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    tty: true
+    ports:
+    - 80:80
+    - 8080:8080
+    command:
+    - --web
+  longpolling:
+    image: laslabs/runbot:latest
+    environment:
+      PGPASSWORD: odoo
+      PGUSER: odoo
+      PROXY_MODE: 'true'
+      WAIT_NOHOST: install
+    volumes:
+    - odoo-web-data:/var/lib/odoo
+    - /var/run/docker.sock:/var/run/docker.sock
+    - runbot-builds:/opt/odoo/custom/src/odoo-extra/runbot/static
+    tty: true
+    links:
+    - postgresql:db
+    ports:
+    - 8072
+    command:
+    - /usr/local/bin/odoo
+    - --max-cron-threads=0
+    - --workers=2
+    labels:
+      traefik.enable: 'true'
+      traefik.port: '8072'
+      traefik.frontend.rule: 'Host: localhost;PathPrefix:/longpolling'
+      traefik.frontend.passHostHeader: 'true'

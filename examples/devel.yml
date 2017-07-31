@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+
+  web:
+    image: laslabs/runbot:9.0
+    restart: unless-stopped
+    links:
+      - postgresql:db
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - /var/run/docker.sock:/var/run/docker.sock
+    tty: true
+    privileged: true
+    ports:
+      - 10080:8069
+      - 1800-2000:1800-2000
+
+    environment:
+      PGPASSWORD: 'odoo'
+      PGUSER: 'odoo'
+      ADMIN_PASSWORD: 'admin'
+
+  postgresql:
+    image: postgres:9.6-alpine
+    restart: unless-stopped
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_PASSWORD: 'odoo'
+      POSTGRES_USER: 'odoo'
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
