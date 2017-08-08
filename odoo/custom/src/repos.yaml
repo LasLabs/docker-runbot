@@ -35,6 +35,10 @@
     laslabs aggregated_branch_name
   merges:
     - laslabs long-term/runbot
+    -
+      remote: laslabs
+      ref: release/9.0/runbot_secure
+      depth: 200
 
 ./server-tools:
   defaults:
