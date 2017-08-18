@@ -94,7 +94,7 @@ services:
     command:
     - --web
   longpolling:
-    image: laslabs/runbot:latest
+    image: laslabs/runbot:9.0
     environment:
       PGPASSWORD: odoo
       PGUSER: odoo
