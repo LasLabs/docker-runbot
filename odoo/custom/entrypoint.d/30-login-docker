@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+
+import logging
+import os
+import subprocess
+
+from collections import defaultdict
+
+PREFIX = 'DOCKER_REGISTRY_'
+
+registries = defaultdict(dict)
+
+# Get registry information from env vars
+for name, value in os.environ.items():
+
+    if not name.startswith(PREFIX):
+        continue
+
+    name = name.replace(PREFIX, '')
+    registry, option = name.rsplit('_', 1)
+    registries[registry][option] = value.strip()
+
+# Iterate and login
+for registry, options in registries.items():
+
+    try:
+        command = [
+            'docker', 'login',
+            '--username="%s"' % options['USERNAME'],
+            '--password="%s"' % options['PASSWORD'].replace('$', '$$'),
+        ]
+        try:
+            command.append(options['HOSTNAME'])
+        except KeyError:
+            pass
+        subprocess.check_output(command)
+    except (subprocess.CalledProcessError, KeyError):
+        logging.exception('Could not login to registry with "%s"', options)

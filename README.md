@@ -12,6 +12,9 @@ This image provides a fully Dockerized Runbot environment.
 Usage
 =====
 
+Deploy
+------
+
 The easiest way to deploy this image is by using Docker Compose.
 
 A simple compose file would look something like the below. This is a great one for testing Runbot locally:
@@ -259,6 +262,33 @@ following services:
 * `cron` - This is the Runbot cron worker, and actually performs the builds.
   Scale this for more build capacity.
 
+Docker Registries
+-----------------
+
+Sometimes logging into Docker registries can be required in order to allow
+custom Travis2Docker build images. In this case, the `DOCKER_REGISTRY_`
+environment variables have been exposed.
+
+The format of the docker registry variables is `DOCKER_REGISTRY_NAME_OPTION`
+where `NAME` is the canonical name for the Docker registry group, and `OPTION`
+is one of the following:
+
+* `HOSTNAME` - The hostname for the registry group. This is not required for
+  Dockerhub.
+* `USERNAME` - The username for the registry group
+* `PASSWORD` - The password for the registry group
+
+Following is an example of two registries (`DOCKERHUB` and `EXAMPLE`):
+
+```
+environment:
+    DOCKER_REGISTRY_DOCKERHUB_USERNAME: "dockerhub_username"
+    DOCKER_REGISTRY_DOCKERHUB_PASSWORD: "Sup3rS3cur3"
+    DOCKER_REGISTRY_EXAMPLE_HOSTNAME: "registry.example.com:8080"
+    DOCKER_REGISTRY_EXAMPLE_USERNAME: "example_registry_username"
+    DOCKER_REGISTRY_EXAMPLE_PASSWORD: "apassword"
+```
+
 Environment Variables
 =====================
 
@@ -275,6 +305,9 @@ Runbot container:
 | `PGDATABASE` | prod | Database name to use for Runbot|
 | `PROXY_MODE` | false | Set to `true` if Runbot is behind a load balancer |
 | `WITHOUT_DEMO` | all | Demo data setting for Runbot |
+| `DOCKER_REGISTRY_X_USERNAME` | | Username for logging into registry group X |
+| `DOCKER_REGISTRY_X_PASSWORD` | | Password for logging into registry group X |
+| `DOCKER_REGISTRY_X_HOSTNAME` | | Hostname for registry group X. Not required for DockerHub |
 
 
 Known Issues / Roadmap
